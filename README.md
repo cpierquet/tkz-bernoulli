@@ -1,6 +1,6 @@
-tkzbernoulli is a package to persent Bernoulli trees with tikz.
+tkz-bernoulli is a package to present Bernoulli trees with tikz.
 -----------------------------------------------------------------------------
-tkzbernoulli est un package pour représenter un arbre de Bernoulli avec tikz.
+tkz-bernoulli est un package pour représenter un arbre de Bernoulli avec tikz.
 -----------------------------------------------------------------------------
 Author  : Cédric Pierquet
 email   : cpierquet@outlook.fr
