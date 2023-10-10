@@ -34,8 +34,8 @@
 \hypersetup{pdfborder=0 0 0}
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
-\def\TPversion{0.1.0}
-\def\TPdate{9 septembre 2023}
+\def\TPversion{0.1.1}
+\def\TPdate{10 octobre 2023}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,hooks}
 \usepackage{soul}
@@ -308,6 +308,40 @@ Les \textsf{clés} relatives aux commandes précédentes permettent de modifier 
 \tkzSchemBernoulli*
 \end{demohigh}
 
+\subsection{La commande pour une épreuve de Bernoulli}
+
+Il existe une commande, \MontreCode{\textbackslash tkzEpreuvBernoulli}, pour afficher un arbre \textit{simple}, avec le même fonctionnement que les arbres \textit{complets}.
+
+Certaines clés n'ont pas d'effet, donc il n'y aura pas de d'explications dédiées pour cette commande.
+
+\begin{codehigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+%commande dans un environnement tikzpicture
+\begin{tikzpicture}
+    \tkzEpreuvBernoulli[clés]
+\end{tikzpicture}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+\begin{tikzpicture}
+	\tkzEpreuvBernoulli
+\end{tikzpicture}
+~~
+\begin{tikzpicture}
+	\tkzEpreuvBernoulli[Racine=false]
+\end{tikzpicture}
+\end{demohigh}
+
+\begin{codehigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+%commande autonome
+\tkzEpreuvBernoulli*[clés]
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+\tkzEpreuvBernoulli*[Probas={$p$/$q$}]
+~~
+\tkzEpreuvBernoulli*
+\end{demohigh}
+
 \pagebreak
 
 \section{English commands}
@@ -354,6 +388,34 @@ Default styles are given by :
 \tkzBernTreeStyleDefault
 \end{codehigh}
 
+\begin{codehigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+%command in an environment tikzpicture for a single Bernoulli trial
+\begin{tikzpicture}
+    tkzBernoulliTrial[keys]
+\end{tikzpicture}
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+\begin{tikzpicture}
+	\tkzBernoulliTrial
+\end{tikzpicture}
+~~
+\begin{tikzpicture}
+	\tkzBernoulliTrial[Root=false]
+\end{tikzpicture}
+\end{demohigh}
+
+\begin{codehigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+%stand-alone command for a single Bernoulli trial
+\tkzBernoulliTrial*[keys]
+\end{codehigh}
+
+\begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+\tkzBernoulliTrial*[Probs={$p$/$q$}]
+~~
+\tkzBernoulliTrial*
+\end{demohigh}
+
 \subsection{Examples}
 
 \begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
@@ -363,7 +425,7 @@ Default styles are given by :
 \end{demohigh}
 
 \begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
-\tkzBernoulliTree*[Help,ShowProbs=false,LevelSep=3.25,NodeSep=0.75,N=4,Guide,var=Z]
+\tkzBernoulliTree*[Help,ShowProbs=false,LevelSep=3.25,NodeSep=0.75,N=4,Guide,Var=Z]
 \end{demohigh}
 
 \begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]

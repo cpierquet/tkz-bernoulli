@@ -2,9 +2,10 @@
 % licence    : Released under the LaTeX Project Public License v1.3c or later, see http://www.latex-project.org/lppl.txtf
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{tkz-bernoulli}[2023/09/09 0.1.0 Draw Bernoulli tree with tikz]
+\ProvidesPackage{tkz-bernoulli}[2023/10/10 0.1.1 Draw Bernoulli tree with tikz]
 
 %====HISTORIQUE
+% v 0.1.1	Correction de bugs + ajout d'une commande pour une épreuve de Bernoulli
 % v 0.1.0	Version initiale [fr] et [en]
 
 %====BASE
@@ -83,6 +84,45 @@
 	N=3
 }
 
+\NewDocumentCommand\tkzEpreuvBernoulli{ s O{} D<>{} }{%
+	\useKVdefault[ArbreBernoulli]%
+		\setKV[ArbreBernoulli]{#2}%
+		\saveexpandmode\expandarg
+		\StrCut{\ArBinEvts}{/}{\ArBinSucces}{\ArBinEchec}%
+		\StrCut{\ArBinProbas}{/}{\ArBinProbSucces}{\ArBinProbEchec}%
+		\restoreexpandmode
+		\IfBooleanT{#1}%
+			{%
+				\begin{tikzpicture}[#3]
+			}%
+		\IfStrEq{\ArBinRacine}{false}%
+			{%
+				\coordinate (A0-1) at (0,0) ;%
+				\coordinate (B0-1) at (0,0) ;%
+			}%
+			{%
+				\coordinate (A0-1) at (0,0) ;%
+				\node[BernRacine] (B0-1) at (A0-1) {\ArBinRacine} ;%
+			}%
+		\coordinate (A1-1) at ($(A0-1)+({\ArBinIN},{0.5*\ArBinIF})$) ;
+		\coordinate (A1-2) at ($(A0-1)+({\ArBinIN},{-0.5*\ArBinIF})$) ;
+		\node[BernNoeudS] (B1-1) at (A1-1) {\ArBinSucces} ;%succès
+		\node[BernNoeudE] (B1-2) at (A1-2) {\ArBinEchec} ;%échec
+		\ifboolKV[ArbreBernoulli]{AffProbas}%
+			{%
+				\draw[BernBranche] (B0-1) -- (B1-1) node[BernProbaS] {\ArBinProbSucces} ;
+				\draw[BernBranche] (B0-1) -- (B1-2) node[BernProbaE] {\ArBinProbEchec} ;
+			}%
+			{%
+				\draw[BernBranche] (B0-1) -- (B1-1) ;
+				\draw[BernBranche] (B0-1) -- (B1-2) ;
+			}%
+		\IfBooleanT{#1}%
+			{%
+				\end{tikzpicture}%
+			}%
+}
+
 \NewDocumentCommand\tkzSchemBernoulli{ s O{} D<>{} }{%
 	\useKVdefault[ArbreBernoulli]%
 	\setKV[ArbreBernoulli]{#2}%
@@ -104,6 +144,7 @@
 	%Racine
 	\IfStrEq{\ArBinRacine}{false}%
 		{%
+			\coordinate (A0-1) at (0,0) ;%
 			\coordinate (B0-1) at (0,0) ;%
 		}%
 		{%
@@ -160,7 +201,7 @@
 			\foreach \i in {1,...,\fpeval{2**\ArBinN}}{%
 				\def\itmp{\fpeval{2**\ArBinN-\i}}%
 				\def\ArBenTmpBin{\xintDecToBin{\itmp}}%
-				\draw (B\ArBinN-\i) node[BernNotice] {$\longrightarrow X=\StrCount{\ArBenTmpBin}{1}$} ;
+				\draw (B\ArBinN-\i) node[BernNotice] {$\longrightarrow \ArBinVar=\StrCount{\ArBenTmpBin}{1}$} ;
 				}%
 		}%
 		{}%
@@ -227,7 +268,7 @@
 \setKVdefault[BernoulliTree]{%
 	LevelSep=2.25,%
 	NodeSep=1,%
-	Events={$S$/$E$},%
+	Events={$S$/$F$},%
 	Probs={$p$/$1-p$},%
 	Grid=false,%
 	ShowProbs=true,%
@@ -236,6 +277,45 @@
 	Guide=false,%
 	Var=X,%
 	N=3
+}
+
+\NewDocumentCommand\tkzBernoulliTrial{ s O{} D<>{} }{%
+	\useKVdefault[BernoulliTree]%
+		\setKV[BernoulliTree]{#2}%
+		\saveexpandmode\expandarg
+		\StrCut{\ArBinEvts}{/}{\ArBinSucces}{\ArBinEchec}%
+		\StrCut{\ArBinProbas}{/}{\ArBinProbSucces}{\ArBinProbEchec}%
+		\restoreexpandmode
+		\IfBooleanT{#1}%
+			{%
+				\begin{tikzpicture}[#3]
+			}%
+		\IfStrEq{\ArBinRacine}{false}%
+			{%
+				\coordinate (A0-1) at (0,0) ;%
+				\coordinate (B0-1) at (0,0) ;%
+			}%
+			{%
+				\coordinate (A0-1) at (0,0) ;%
+				\node[BernRoot] (B0-1) at (A0-1) {\ArBinRacine} ;%
+			}%
+		\coordinate (A1-1) at ($(A0-1)+({\ArBinIN},{0.5*\ArBinIF})$) ;
+		\coordinate (A1-2) at ($(A0-1)+({\ArBinIN},{-0.5*\ArBinIF})$) ;
+		\node[BernNodeS] (B1-1) at (A1-1) {\ArBinSucces} ;%succès
+		\node[BernNodeF] (B1-2) at (A1-2) {\ArBinEchec} ;%échec
+		\ifboolKV[BernoulliTree]{ShowProbs}%
+			{%
+				\draw[BernEdge] (B0-1) -- (B1-1) node[BernProbS] {\ArBinProbSucces} ;
+				\draw[BernEdge] (B0-1) -- (B1-2) node[BernProbF] {\ArBinProbEchec} ;
+			}%
+			{%
+				\draw[BernEdge] (B0-1) -- (B1-1) ;
+				\draw[BernEdge] (B0-1) -- (B1-2) ;
+			}%
+		\IfBooleanT{#1}%
+			{%
+				\end{tikzpicture}%
+			}%
 }
 
 \NewDocumentCommand\tkzBernoulliTree{ s O{} D<>{} }{%
@@ -259,6 +339,7 @@
 	%Racine
 	\IfStrEq{\ArBinRacine}{false}%
 		{%
+			\coordinate (A0-1) at (0,0) ;%
 			\coordinate (B0-1) at (0,0) ;%
 		}%
 		{%
@@ -267,7 +348,7 @@
 		}%
 	%Aide Racine
 	\ifboolKV[BernoulliTree]{Help}%
-		{\draw[teal] (B0-1) node[below=4pt,font=\tiny\ttfamily] {A00} ;}%
+		{\draw[teal] (B0-1) node[below=4pt,font=\tiny\ttfamily] {B0-1} ;}%
 		{}%
 	%générations des nœuds du premier chemin
 	\foreach \i in {1,...,\ArBinN}{%
@@ -315,7 +396,7 @@
 			\foreach \i in {1,...,\fpeval{2**\ArBinN}}{%
 				\def\itmp{\fpeval{2**\ArBinN-\i}}%
 				\def\ArBenTmpBin{\xintDecToBin{\itmp}}%
-				\draw (B\ArBinN-\i) node[BernGuide] {$\longrightarrow X=\StrCount{\ArBenTmpBin}{1}$} ;
+				\draw (B\ArBinN-\i) node[BernGuide] {$\longrightarrow \ArBinVar=\StrCount{\ArBenTmpBin}{1}$} ;
 				}%
 		}%
 		{}%
