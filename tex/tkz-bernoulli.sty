@@ -2,9 +2,10 @@
 % licence    : Released under the LaTeX Project Public License v1.3c or later, see http://www.latex-project.org/lppl.txtf
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{tkz-bernoulli}[2023/10/10 0.1.1 Draw Bernoulli tree with tikz]
+\ProvidesPackage{tkz-bernoulli}[2023/11/04 0.1.2 Draw Bernoulli tree with tikz]
 
 %====HISTORIQUE
+% v 0.1.2	Ajout d'une clé pour forcer l'affichage d'un indice pour les succès/échecs (prudence quand même...)
 % v 0.1.1	Correction de bugs + ajout d'une commande pour une épreuve de Bernoulli
 % v 0.1.0	Version initiale [fr] et [en]
 
@@ -14,6 +15,7 @@
 \RequirePackage{simplekv}
 \RequirePackage{xintexpr,xintbinhex}
 \usetikzlibrary{calc}
+%\RequirePackage{listofitems}
 
 %====SCHÉMA DE BERNOULLI [FR]
 %styles par défaut
@@ -81,7 +83,8 @@
 	Aide=false,%
 	Notice=false,%
 	Var=X,%
-	N=3
+	N=3,%
+	Indice=false
 }
 
 \NewDocumentCommand\tkzEpreuvBernoulli{ s O{} D<>{} }{%
@@ -91,6 +94,12 @@
 		\StrCut{\ArBinEvts}{/}{\ArBinSucces}{\ArBinEchec}%
 		\StrCut{\ArBinProbas}{/}{\ArBinProbSucces}{\ArBinProbEchec}%
 		\restoreexpandmode
+		%====test listofitems
+		% \setsepchar[.]{/}%
+		% \readlist*\DefEvts{\ArBinEvts}%
+		% \itemtomacro\DefEvts[1]\ArBinSucces%
+		% \itemtomacro\DefEvts[2]\ArBinEchec%
+		%===fin test listofitems
 		\IfBooleanT{#1}%
 			{%
 				\begin{tikzpicture}[#3]
@@ -106,8 +115,8 @@
 			}%
 		\coordinate (A1-1) at ($(A0-1)+({\ArBinIN},{0.5*\ArBinIF})$) ;
 		\coordinate (A1-2) at ($(A0-1)+({\ArBinIN},{-0.5*\ArBinIF})$) ;
-		\node[BernNoeudS] (B1-1) at (A1-1) {\ArBinSucces} ;%succès
-		\node[BernNoeudE] (B1-2) at (A1-2) {\ArBinEchec} ;%échec
+		\node[BernNoeudS] (B1-1) at (A1-1) {\ifboolKV[ArbreBernoulli]{Indice}{\StrSubstitute{\ArBinSucces}{_i}{_1}}{\ArBinSucces}} ;%{\ArBinSucces} ;%succès
+		\node[BernNoeudE] (B1-2) at (A1-2) {\ifboolKV[ArbreBernoulli]{Indice}{\StrSubstitute{\ArBinEchec}{_i}{_1}}{\ArBinEchec}} ;%{\ArBinEchec} ;%échec
 		\ifboolKV[ArbreBernoulli]{AffProbas}%
 			{%
 				\draw[BernBranche] (B0-1) -- (B1-1) node[BernProbaS] {\ArBinProbSucces} ;
@@ -171,8 +180,8 @@
 		\def\ArBinTmpNds{\fpeval{2**(\i)}}%
 		\foreach \j in {1,...,\ArBinTmpNds}{%
 			\xintifboolexpr{\xintiiRem{\j}{2} != 0 }%
-				{\node[BernNoeudS] (B\i-\j) at (A\i-\j) {\ArBinSucces} ;}%succès
-				{\node[BernNoeudE] (B\i-\j) at (A\i-\j) {\ArBinEchec} ;}%échec
+				{\node[BernNoeudS] (B\i-\j) at (A\i-\j) {\ifboolKV[ArbreBernoulli]{Indice}{\StrSubstitute{\ArBinSucces}{_i}{_{\i}}}{\ArBinSucces}} ;}%{\ArBinSucces} ;}%succès
+				{\node[BernNoeudE] (B\i-\j) at (A\i-\j) {\ifboolKV[ArbreBernoulli]{Indice}{\StrSubstitute{\ArBinEchec}{_i}{_{\i}}}{\ArBinEchec}} ;}%{\ArBinEchec} ;}%échec
 			\ifboolKV[ArbreBernoulli]{Aide}%
 				{\draw[teal] (B\i-\j) node[below=4pt,font=\tiny\ttfamily] {B\i-\j} ;}%
 				{}%
@@ -276,7 +285,8 @@
 	Help=false,%
 	Guide=false,%
 	Var=X,%
-	N=3
+	N=3,%
+	Subscript=false
 }
 
 \NewDocumentCommand\tkzBernoulliTrial{ s O{} D<>{} }{%
@@ -301,8 +311,8 @@
 			}%
 		\coordinate (A1-1) at ($(A0-1)+({\ArBinIN},{0.5*\ArBinIF})$) ;
 		\coordinate (A1-2) at ($(A0-1)+({\ArBinIN},{-0.5*\ArBinIF})$) ;
-		\node[BernNodeS] (B1-1) at (A1-1) {\ArBinSucces} ;%succès
-		\node[BernNodeF] (B1-2) at (A1-2) {\ArBinEchec} ;%échec
+		\node[BernNodeS] (B1-1) at (A1-1) {\ifboolKV[BernoulliTree]{Subscript}{\StrSubstitute{\ArBinSucces}{_i}{_1}}{\ArBinSucces}} ;%succès
+		\node[BernNodeF] (B1-2) at (A1-2) {\ifboolKV[BernoulliTree]{Subscript}{\StrSubstitute{\ArBinEchec}{_i}{_1}}{\ArBinEchec}} ;%échec
 		\ifboolKV[BernoulliTree]{ShowProbs}%
 			{%
 				\draw[BernEdge] (B0-1) -- (B1-1) node[BernProbS] {\ArBinProbSucces} ;
@@ -366,8 +376,8 @@
 		\def\ArBinTmpNds{\fpeval{2**(\i)}}%
 		\foreach \j in {1,...,\ArBinTmpNds}{%
 			\xintifboolexpr{\xintiiRem{\j}{2} != 0 }%
-				{\node[BernNodeS] (B\i-\j) at (A\i-\j) {\ArBinSucces} ;}%succès
-				{\node[BernNodeF] (B\i-\j) at (A\i-\j) {\ArBinEchec} ;}%échec
+				{\node[BernNodeS] (B\i-\j) at (A\i-\j) {\ifboolKV[BernoulliTree]{Subscript}{\StrSubstitute{\ArBinSucces}{_i}{_{\i}}}{\ArBinSucces}} ;}%succès
+				{\node[BernNodeF] (B\i-\j) at (A\i-\j) {\ifboolKV[BernoulliTree]{Subscript}{\StrSubstitute{\ArBinEchec}{_i}{_{\i}}}{\ArBinEchec}} ;}%échec
 			\ifboolKV[BernoulliTree]{Help}%
 				{\draw[teal] (B\i-\j) node[below=4pt,font=\tiny\ttfamily] {B\i-\j} ;}%
 				{}%

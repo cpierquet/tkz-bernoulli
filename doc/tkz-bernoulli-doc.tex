@@ -34,8 +34,8 @@
 \hypersetup{pdfborder=0 0 0}
 \usepackage[margin=1.5cm]{geometry}
 \setlength{\parindent}{0pt}
-\def\TPversion{0.1.1}
-\def\TPdate{10 octobre 2023}
+\def\TPversion{0.1.2}
+\def\TPdate{4 novembre 2023}
 \usepackage{tcolorbox}
 \tcbuselibrary{skins,hooks}
 \usepackage{soul}
@@ -232,7 +232,8 @@ Concernant cette commande :
 		\item \MontreCode{Aide} := booléen pour afficher les noms des nœuds créés (\MontreCode{false} par défaut) ;
 		\item \MontreCode{Notice} := booléen pour afficher les valeurs prises par la v.a. (\MontreCode{false} par défaut) ;
 		\item \MontreCode{Var} := nom de la v.a. pour la notice (\MontreCode{X} par défaut) ;
-		\item \MontreCode{N} := paramètre $n$ du schéma de Bernoulli (\MontreCode{3} par défaut).
+		\item \MontreCode{N} := paramètre $n$ du schéma de Bernoulli (\MontreCode{3} par défaut) ;
+		\item \MontreCode{Indice} := booléen (expérimental !!) pour forcer l'affichage de l'indice du niveau pour les succès/échecs, au quel cas les évènements doivent utiliser \MontreCode{\_i} (mais pas dans un \MontreCode{\textbackslash overline}\ldots) ! (\MontreCode{false} par défaut).
 	\end{itemize}
 \end{itemize}
 
@@ -256,6 +257,13 @@ Concernant cette commande :
         Evts={$A$/$\overline{A}$},%
         EspFeuil=0.75,%
         Probas={$\nicefrac{1}{6}$/$\nicefrac{5}{6}$}]
+\end{tikzpicture}
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+%avec la clé Indice
+\begin{tikzpicture}
+    \tkzSchemBernoulli[Indice,Evts={$S_i$/$\overline{S}_i$}]
 \end{tikzpicture}
 \end{demohigh}
 
@@ -441,6 +449,13 @@ Default styles are given by :
     Events={$A$/$\overline{A}$},%
     NodeSep=0.75,Guide,%
     Probs={$\nicefrac{1}{6}$/$\nicefrac{5}{6}$}]
+\end{demohigh}
+
+\begin{demohigh}[language=latex/latex2,style/main=cyan!10,style/code=cyan!10]
+%with Subscript key, experimental...
+\begin{tikzpicture}
+    \tkzBernoulliTree[Subscript,Events={$S_i$/$\overline{S}_i$}]
+\end{tikzpicture}
 \end{demohigh}
 
 \end{document}
